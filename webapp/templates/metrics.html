@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Model Performance &amp; Benchmarks — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 10px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Classifier Performance</span>
+  </div>
+  <h1 class="page-title" style="margin: 0 0 6px 0;">Model Performance &amp; Cross-Validation</h1>
+  <p class="page-subtitle" style="margin: 0;">
+    Evaluation metrics across trained classifier architectures measured on held-out recordings never seen during training.
+  </p>
+</div>
+
+{% if not meta %}
+  <div class="banner error">No trained model metadata found. Run <code>python -m src.models.train</code>.</div>
+{% else %}
+
+  <div style="display: flex; align-items: center; gap: 12px; font-size: 13.5px; padding-bottom: 16px; border-bottom: 1px solid var(--color-surface-strong); margin-bottom: 28px; flex-wrap: wrap;">
+    <span>Dataset Source: <strong>{{ meta.data_source }}</strong></span> &bull; 
+    <span><strong>{{ meta.n_samples }}</strong> segments ({{ meta.n_seizure }} seizure)</span> &bull; 
+    <span><strong>{{ meta.n_recordings }}</strong> recordings</span> &bull; 
+    <span><strong>{{ meta.n_features }}</strong> signal features</span>
+  </div>
+
+  <div style="border-left: 2px solid var(--color-primary); padding-left: 16px; margin-bottom: 40px;">
+    <h3 style="font-size: 16px; margin: 0 0 4px 0;">Evaluation &amp; Validation Methodology</h3>
+    <p class="body-sm" style="margin: 0; color: var(--color-muted);">
+      <strong>Protocol:</strong> {{ meta.evaluation }}. Every metric reported below is evaluated strictly on <em>held-out recordings</em> to guarantee genuine generalisation and zero leakage.
+    </p>
+  </div>
+
+  {% set tm = meta.test_metrics %}
+  {% if tm %}
+  <h2 class="section-title" style="margin-bottom: 12px;">Held-Out Test Set Performance</h2>
+  <div class="table-wrapper" style="margin-bottom: 12px; border-top: 1px solid var(--color-surface-strong);">
+    <table class="report-table">
+      <tbody>
+        <tr>
+          <th>Sensitivity (Recall)</th><td><strong style="color: var(--color-brand-teal);">{{ '%.3f'|format(tm.sensitivity) }}</strong></td>
+          <th>Specificity</th><td><strong style="color: var(--color-brand-teal);">{{ '%.3f'|format(tm.specificity) }}</strong></td>
+        </tr>
+        <tr>
+          <th>Balanced Accuracy</th><td><strong style="color: var(--color-brand-teal);">{{ '%.3f'|format(tm.balanced_accuracy) }}</strong></td>
+          <th>Accuracy</th><td><strong>{{ '%.3f'|format(tm.accuracy) }}</strong></td>
+        </tr>
+        <tr>
+          <th>PPV (Precision)</th><td><strong>{{ '%.3f'|format(tm.ppv) }}</strong></td>
+          <th>NPV</th><td><strong>{{ '%.3f'|format(tm.npv) }}</strong></td>
+        </tr>
+        <tr>
+          <th>ROC-AUC</th><td><strong>{{ '%.3f'|format(tm.roc_auc) if tm.roc_auc is not none else '—' }}</strong></td>
+          <th>PR-AUC</th><td><strong>{{ '%.3f'|format(tm.pr_auc) }}</strong></td>
+        </tr>
+        <tr>
+          <th>Brier Calibration Score</th><td><strong>{{ '%.4f'|format(tm.brier) if tm.brier is not none else '—' }}</strong></td>
+          <th>Confusion Matrix (TN / FP / FN / TP)</th>
+          <td><strong>{{ tm.confusion.tn }} / {{ tm.confusion.fp }} / {{ tm.confusion.fn }} / {{ tm.confusion.tp }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="caption" style="margin-bottom: 48px;">
+    Decision threshold: <strong>{{ '%.3f'|format(meta.decision_threshold) }}</strong> ({{ meta.calibration_method }}-calibrated probability mapping).
+  </p>
+  {% endif %}
+
+  <h2 class="section-title" style="margin-bottom: 12px;">Classifier Model Comparison <span class="caption">(Ranked by PR-AUC)</span></h2>
+  <div class="table-wrapper" style="border-top: 1px solid var(--color-surface-strong); margin-bottom: 32px;">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Model Architecture</th>
+          <th>Type</th>
+          <th>PR-AUC</th>
+          <th>ROC-AUC</th>
+          <th>Sens @ .5</th>
+          <th>Spec @ .5</th>
+          <th>Balanced Acc</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, m in meta.metrics.items()|sort(attribute='1.pr_auc', reverse=true) %}
+        <tr {% if name == meta.best_model or (name ~ '') in meta.best_model %}style="background-color: var(--color-surface-soft); font-weight: 600;"{% endif %}>
+          <td>
+            <strong>{{ name }}</strong>
+            {% if name == meta.best_model or (name ~ '') in meta.best_model %}
+              <span class="badge status-approved" style="margin-left: 6px; font-size: 11px;"></span>
+            {% endif %}
+          </td>
+          <td><span class="tag-chip">{{ m.type }}</span></td>
+          <td><strong>{{ '%.3f'|format(m.pr_auc) }}</strong></td>
+          <td>{{ '%.3f'|format(m.roc_auc) if m.roc_auc is not none else '—' }}</td>
+          <td>{{ '%.3f'|format(m.sensitivity) }}</td>
+          <td>{{ '%.3f'|format(m.specificity) }}</td>
+          <td><strong>{{ '%.3f'|format(m.balanced_accuracy) }}</strong></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="padding-top: 16px; border-top: 1px solid var(--color-surface-strong); font-size: 12px; color: var(--color-muted);">
+  </div>
+{% endif %}
+
+{% endblock %}

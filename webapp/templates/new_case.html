@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Case Lookup — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 10px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Case Lookup</span>
+  </div>
+  <h1 class="page-title" style="margin: 0 0 6px 0;">Registered Case Lookup</h1>
+  <p class="page-subtitle" style="margin: 0;">
+    Search for existing registered patients. To upload a new EEG recording, use <a href="{{ url_for('register_patient') }}">Upload &amp; Analyze</a>.
+  </p>
+</div>
+
+<div style="max-width: 580px; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--color-surface-strong);">
+  <h3 style="margin: 0 0 14px 0; font-size: 17px;">Find Patient in Registry</h3>
+  <form method="post" class="form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <div class="form-group">
+      <label for="input-patient-name">Registered Patient Name</label>
+      <input type="text" id="input-patient-name" name="patient_name" value="{{ searched_name }}"
+             list="registered-patient-names" required autocomplete="off"
+             placeholder="Enter the exact registered patient name">
+      <datalist id="registered-patient-names">
+        {% for patient in patients %}
+          <option value="{{ patient.name }}">Patient #{{ patient.id }}</option>
+        {% endfor %}
+      </datalist>
+    </div>
+    <div style="margin-top: 6px;">
+      <button class="btn primary lg" type="submit">Analyze and Create Report &rarr;</button>
+    </div>
+  </form>
+</div>
+
+{% if matches|length > 1 %}
+  <h2 class="section-title" style="margin-bottom: 12px;">Select Matching Patient</h2>
+  <div class="table-wrapper" style="border-top: 1px solid var(--color-surface-strong); margin-bottom: 32px;">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Patient ID</th>
+          <th>Name</th>
+          <th>EEG Source</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for patient in matches %}
+        <tr>
+          <td><span class="tag-chip">#{{ patient.id }}</span></td>
+          <td><strong>{{ patient.name }}</strong></td>
+          <td>{{ patient.eeg_source }}</td>
+          <td>
+            <form method="post" style="margin: 0;">
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+              <input type="hidden" name="patient_name" value="{{ patient.name }}">
+              <input type="hidden" name="patient_id" value="{{ patient.id }}">
+              <button class="btn sm primary" type="submit">Analyze This Patient</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+
+<div class="row-actions">
+  <a class="btn primary" href="{{ url_for('register_patient') }}">Upload New Case</a>
+  <a class="btn" href="{{ url_for('patients') }}">View Patient Registry</a>
+</div>
+
+{% endblock %}

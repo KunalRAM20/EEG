@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.pyc
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Local application state
+webapp/cdss.db
+webapp/uploads/*
+!webapp/uploads/.gitkeep
+
+# JavaScript dependencies and build output
+**/node_modules/
+**/dist/
+**/.nuxt/
+**/.next/
+
+# Editors and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local AI assistant configuration and skill packages
+.agents/
+.claude/
+.codex/
+.cursor/
+.windsurf/
+gsap-skills/
+.dataset-tools/*
+.dataset-tools/
+# Trained artefacts (regenerate with: python -m src.models.train)
+models_store/*.joblib
+models_store/*.npy
+models_store/*.json
+

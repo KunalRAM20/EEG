@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Dataset Registry &amp; Cohort Catalogs — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 10px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Data Provenance</span>
+  </div>
+  <h1 class="page-title" style="margin: 0 0 6px 0;">Dataset Registry &amp; Cohorts</h1>
+  <p class="page-subtitle" style="margin: 0;">
+    Integrated research cohorts for single-channel EEG classifier training and multi-modal clinical validation.
+  </p>
+</div>
+
+<div class="features-editorial-grid" style="margin-bottom: 48px;">
+{% for d in datasets %}
+  <div class="feature-editorial-item">
+    <div>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span class="feature-editorial-num">COHORT {{ loop.index }}</span>
+        <span class="badge {% if d.status == 'local' %}status-approved{% else %}status-draft{% endif %}">{{ d.status|capitalize }}</span>
+      </div>
+      <h3 style="margin: 0 0 6px 0;">{{ d.name }}</h3>
+      <p class="body-sm" style="margin-bottom: 8px;"><strong>{{ d.subjects }}</strong></p>
+      <div style="margin-bottom: 10px;">
+        {% for m in d.modalities %}<span class="tag-chip">{{ m }}</span>{% endfor %}
+      </div>
+    </div>
+    <div style="font-size: 12px; color: var(--color-muted); border-top: 1px solid var(--color-hairline); padding-top: 8px;">
+      Model Inference: <span class="badge status-approved" style="font-size: 10.5px; padding: 1px 6px;">{{ 'Supported' if d.prediction_supported else 'Contextual' }}</span>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+{% if seizeit2 %}
+<h2 class="section-title" style="margin-bottom: 12px;">Annotated SeizeIT2 Cohort Participants</h2>
+<div class="table-wrapper" style="border-top: 1px solid var(--color-surface-strong); margin-bottom: 48px;">
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Participant ID</th>
+        <th>Biological Sex</th>
+        <th>EEG</th>
+        <th>ECG</th>
+        <th>EMG</th>
+        <th>Movement</th>
+        <th>Annotated Seizures</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in seizeit2 %}
+      <tr>
+        <td><strong>{{ s.id }}</strong></td>
+        <td>{{ s.sex }}</td>
+        <td>{{ s.eeg }}</td>
+        <td>{{ s.ecg }}</td>
+        <td>{{ s.emg }}</td>
+        <td>{{ s.movement }}</td>
+        <td><span class="badge status-approved">{{ s.seizures }} recorded</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% endblock %}

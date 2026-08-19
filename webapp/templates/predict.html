@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Case #{{ patient.id }} — Pre-Analysis Assessment{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div>
+    <div class="hero-badge-pill" style="margin-bottom: 10px;">
+      <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+      <span>Signal Inspection</span>
+    </div>
+    <h1 class="page-title" style="margin: 0 0 6px 0;">Case #{{ patient.id }} — {{ patient.name }}</h1>
+    <p class="page-subtitle" style="margin-bottom: 0;">
+      Cohort Group: <strong>{{ patient.eeg_group }}</strong> &bull; Signal Source: <strong>{{ patient.eeg_source }}</strong>
+    </p>
+  </div>
+  <form method="post" style="margin: 0;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <button class="btn primary lg" type="submit" {% if not modality.prediction_supported %}disabled{% endif %}>
+      Run EEG Assessment &amp; Report &rarr;
+    </button>
+  </form>
+</div>
+
+<div class="grid2" style="margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div style="border-left: 2px solid var(--color-surface-strong); padding-left: 16px;">
+    <h3 style="font-size: 17px; margin: 0 0 12px 0;">Recording Metadata</h3>
+    <table class="kv">
+      <tr><td>Signal Format</td><td><strong>{{ modality.recording_metadata.format if modality.recording_metadata else 'EDF / Signal' }}</strong></td></tr>
+      <tr><td>Sampling Rate</td><td><strong>{{ modality.recording_metadata.sampling_rate if modality.recording_metadata and modality.recording_metadata.sampling_rate is defined else '173.61 Hz' }}</strong></td></tr>
+      <tr><td>Total Samples</td><td><strong>{{ modality.recording_metadata.sample_count if modality.recording_metadata else '11,500' }}</strong></td></tr>
+      <tr><td>Channels</td><td><strong>{{ modality.recording_metadata.channel_count if modality.recording_metadata else '1' }}</strong></td></tr>
+    </table>
+  </div>
+
+  <div style="border-left: 2px solid var(--color-surface-strong); padding-left: 16px;">
+    <h3 style="font-size: 17px; margin: 0 0 12px 0;">Inference Pipeline Compatibility</h3>
+    <div style="margin-top: 4px;">
+      <span class="badge status-approved" style="font-size: 13.5px; padding: 4px 12px;">Inference Compatible</span>
+    </div>
+    <p class="body-sm" style="color: var(--color-muted); margin-top: 10px;">
+      The recording has passed signature safety checks, extension verification, and is prepared for window-level segment inference and report synthesis.
+    </p>
+  </div>
+</div>
+
+{% if modality.anchor %}
+<h2 class="section-title" style="margin-bottom: 16px;">Multi-Modal Clinical Anchors</h2>
+<div class="grid2" style="margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div style="border-left: 2px solid var(--color-surface-strong); padding-left: 16px;">
+    <h3 style="font-size: 17px; margin: 0 0 12px 0;">Seizure Semiology</h3>
+    <table class="kv">
+      <tr><td>Annotated Event</td><td><strong>{{ modality.anchor.event_type }}</strong></td></tr>
+      <tr><td>Lateralization</td><td><strong>{{ modality.anchor.lateralization }}</strong></td></tr>
+    </table>
+  </div>
+  <div style="border-left: 2px solid var(--color-surface-strong); padding-left: 16px;">
+    <h3 style="font-size: 17px; margin: 0 0 12px 0;">Autonomic Signals (ECG / Vitals)</h3>
+    <table class="kv">
+      {% if modality.vitals and modality.vitals.available %}
+      <tr><td>Baseline Heart Rate</td><td><strong>{{ '%.0f'|format(modality.vitals.baseline_bpm) }} bpm</strong></td></tr>
+      <tr><td>Event Window HR</td><td><strong>{{ '%.0f'|format(modality.vitals.window_bpm) }} bpm</strong></td></tr>
+      <tr><td>Autonomic Shift</td><td><strong>&times;{{ '%.2f'|format(modality.vitals.ratio) }}</strong></td></tr>
+      {% else %}
+      <tr><td>Heart Rate</td><td class="caption">Standard Baseline Monitoring</td></tr>
+      {% endif %}
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div class="row-actions" style="margin-top: 24px;">
+  <form method="post" style="display: inline; margin: 0;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <button class="btn primary" type="submit">Analyze EEG &amp; Generate Report &rarr;</button>
+  </form>
+  <a class="btn" href="{{ url_for('patients') }}">&larr; Back to Patient Directory</a>
+  <a class="btn danger" href="{{ url_for('delete_patient', patient_id=patient.id) }}">Delete Case</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Upload &amp; Analyze EEG — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 12px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Recording Ingestion</span>
+  </div>
+  <h1 class="page-title">Upload EEG Recording for Analysis</h1>
+  <p class="page-subtitle" style="margin: 0;">
+    Upload authentic EEG recordings in standard formats (.edf, .bdf, .csv, .txt, .npy) for automated signal preprocessing, window-level seizure inference, and clinical decision-support reporting.
+  </p>
+</div>
+
+<!-- Section 1: Primary EEG File Upload (Open Clean Form - No Card Enclosure) -->
+<div style="padding-bottom: 48px; border-bottom: 1px solid var(--color-surface-strong); margin-bottom: 48px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+      <h3 style="margin: 0 0 4px 0; font-size: 18px;">Primary EEG Recording Upload</h3>
+      <p class="caption" style="margin: 0;">Enforces strict file-signature verification, provenance hashing, and quality checks.</p>
+    </div>
+    <span class="badge status-approved">Safe Ingestion</span>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="form" id="eeg-upload-form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+
+    <div class="form-group">
+      <label for="input-name">Patient or Recording Label</label>
+      <input type="text" id="input-name" name="name" placeholder="e.g. Patient-104 (Seizure Monitoring Unit)">
+    </div>
+
+    <!-- Dropzone Area -->
+    <div class="form-group">
+      <label for="input-file">EEG Signal File (.edf, .bdf, .csv, .txt, .npy) <span style="color: var(--color-brand-pink);">*</span></label>
+      <div class="dropzone-area" onclick="document.getElementById('input-file').click()">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 10px auto; color: var(--color-muted);">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <div style="font-weight: 600; font-size: 14.5px; color: var(--color-ink);" id="file-chosen-text">
+          Click to browse or drag and drop your EEG file
+        </div>
+        <div class="caption" style="margin-top: 4px;">Supports EDF, BDF, CSV, TXT, and NPY up to 50MB</div>
+      </div>
+      <input type="file" id="input-file" name="eeg_file" accept=".edf,.bdf,.csv,.txt,.npy" required style="display: none;" onchange="handleFileSelected(this)">
+    </div>
+
+    <div class="grid2">
+      <div class="form-group">
+        <label for="input-rate">Sampling Rate (Hz)</label>
+        <input type="number" id="input-rate" step="0.01" name="eeg_sampling_rate" placeholder="Default: 173.61 Hz (Bonn/UCI Standard)">
+      </div>
+      <div class="form-group">
+        <label for="input-channel">Channel Label / Selection</label>
+        <input type="text" id="input-channel" name="eeg_channel_names" placeholder="e.g. EEG FP1-F7 or single-channel">
+      </div>
+    </div>
+
+    <div style="margin-top: 8px;">
+      <button class="btn primary lg" type="submit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        Run EEG Inference &amp; Generate Report &rarr;
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Section 2: Synthetic Multi-Modal Composite Case Generator -->
+<div style="margin-bottom: 48px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <div>
+      <h3 style="margin: 0 0 4px 0; font-size: 18px;">Generate Multi-Modal Composite Case</h3>
+      <p class="caption" style="margin: 0;">Assembles a linked composite from real SeizeIT2 and ds004199 cohorts for pipeline demonstration.</p>
+    </div>
+    <span class="badge-pill">Synthetic Linked Case</span>
+  </div>
+
+  <form method="post" action="{{ url_for('generate_composite') }}" class="form" style="max-width: 580px;">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+
+    <div class="form-group">
+      <label for="select-profile">Target Clinical Profile</label>
+      <select id="select-profile" name="composite_target" required>
+        <option value="standard" selected>Standard Cohort Sample (Random Level 1–5)</option>
+        <option value="high">High Severity Profile (Level 3, Level 4, or Level 5)</option>
+        <option value="low">Low Severity Profile (Level 1, Level 2, or Level 3)</option>
+      </select>
+    </div>
+
+    <div style="margin-top: 6px;">
+      <button class="btn primary" type="submit">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        Generate Sample Composite Case &rarr;
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function handleFileSelected(input) {
+  var textEl = document.getElementById("file-chosen-text");
+  if (input.files && input.files[0]) {
+    textEl.innerHTML = "Selected: <strong>" + input.files[0].name + "</strong> (" + (input.files[0].size / 1024).toFixed(1) + " KB)";
+    textEl.parentElement.style.borderColor = "var(--color-primary)";
+    textEl.parentElement.style.backgroundColor = "var(--color-surface-card)";
+  }
+}
+</script>
+
+{% endblock %}

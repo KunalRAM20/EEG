@@ -1,0 +1,1610 @@
+/* ==========================================================================
+   CLAY DESIGN SYSTEM — EPILEPSY CLINICAL DECISION SUPPORT PLATFORM
+   Based on DESIGN.md specifications & GSAP Animation Suite
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens & Custom Properties
+   -------------------------------------------------------------------------- */
+:root {
+  /* Colors: Primary & Inks */
+  --color-primary: #0a0a0a;
+  --color-primary-active: #1f1f1f;
+  --color-primary-disabled: #e5e5e5;
+  --color-ink: #0a0a0a;
+  --color-body-strong: #1a1a1a;
+  --color-body: #3a3a3a;
+  --color-muted: #6a6a6a;
+  --color-muted-soft: #9a9a9a;
+  --color-hairline: #e5e5e5;
+  --color-hairline-soft: #f0f0f0;
+
+  /* Colors: Surfaces (Warm Cream Canvas Contract) */
+  --color-canvas: #fffaf0;
+  --color-surface-soft: #faf5e8;
+  --color-surface-card: #f5f0e0;
+  --color-surface-strong: #ebe6d6;
+  --color-surface-dark: #0a1a1a;
+  --color-surface-dark-elevated: #1a2a2a;
+
+  /* Colors: Text on Colored Surfaces */
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #a0a0a0;
+
+  /* Colors: Saturated 6-Color Brand Card Palette */
+  --color-brand-pink: #ff4d8b;
+  --color-brand-teal: #1a3a3a;
+  --color-brand-lavender: #b8a4ed;
+  --color-brand-peach: #ffb084;
+  --color-brand-ochre: #e8b94a;
+  --color-brand-mint: #a4d4c5;
+  --color-brand-coral: #ff6b5a;
+
+  /* Colors: Semantics */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Typography */
+  --font-family-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Border Radii */
+  --rounded-xs: 6px;
+  --rounded-sm: 8px;
+  --rounded-md: 12px;
+  --rounded-lg: 16px;
+  --rounded-xl: 24px;
+  --rounded-pill: 9999px;
+  --rounded-full: 9999px;
+
+  /* Spacing */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 96px;
+
+  /* Transitions */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 160ms var(--ease-smooth);
+  --transition-base: 240ms var(--ease-smooth);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base Styles & Reset
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  font-family: var(--font-family-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img, svg, canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-ink);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+a:hover {
+  opacity: 0.85;
+}
+
+/* --------------------------------------------------------------------------
+   3. Typography Scale (Plain Black Display + Inter Body)
+   -------------------------------------------------------------------------- */
+.display-xl, h1.hero-headline {
+  font-family: var(--font-family-display);
+  font-size: clamp(38px, 6vw, 68px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -2.5px;
+  color: var(--color-ink);
+  margin: 0 0 16px 0;
+}
+
+.display-lg, h1.page-title {
+  font-family: var(--font-family-display);
+  font-size: clamp(30px, 4.5vw, 48px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -1.8px;
+  color: var(--color-ink);
+  margin: 0 0 8px 0;
+}
+
+.display-md, h2.section-title {
+  font-family: var(--font-family-display);
+  font-size: clamp(24px, 3.2vw, 36px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: var(--color-ink);
+  margin: 32px 0 16px 0;
+}
+
+.display-sm, h3.card-headline {
+  font-family: var(--font-family-display);
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+  margin: 0 0 8px 0;
+}
+
+.title-lg {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+  color: var(--color-ink);
+}
+
+.title-md, h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--color-ink);
+  margin: 0 0 10px 0;
+}
+
+.title-sm {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--color-ink);
+}
+
+.page-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-muted);
+  max-width: 780px;
+  margin: 0 0 24px 0;
+}
+
+.body-md {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-body);
+}
+
+.body-sm {
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-body);
+}
+
+.caption {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+.caption-uppercase {
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. Header & Top Navigation (Clay Cream Nav)
+   -------------------------------------------------------------------------- */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  height: 64px;
+  background-color: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-lg);
+  backdrop-filter: blur(8px);
+}
+
+.top-nav .nav-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.brand-icon-clay {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-surface-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.06);
+  transition: transform var(--transition-fast);
+  overflow: hidden;
+}
+
+.brand-icon-clay img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-group:hover .brand-icon-clay {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+.brand-name {
+  font-family: var(--font-family-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+}
+
+.brand-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: var(--color-surface-card);
+  color: var(--color-ink);
+  padding: 3px 8px;
+  border-radius: var(--rounded-pill);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link-item {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-muted);
+  padding: 8px 16px;
+  border-radius: var(--rounded-pill);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.nav-link-item:hover {
+  color: var(--color-ink);
+  background-color: var(--color-surface-soft);
+  opacity: 1;
+}
+
+.nav-link-item.active {
+  color: var(--color-ink);
+  background-color: var(--color-surface-card);
+  font-weight: 600;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons (Clay System)
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--rounded-md);
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background-color: var(--color-surface-card);
+  border-color: var(--color-muted-soft);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 10, 10, 0.05);
+}
+
+.btn:active {
+  transform: translateY(0);
+  background-color: var(--color-surface-strong);
+}
+
+.btn.primary, button.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 14px rgba(10, 10, 10, 0.12);
+}
+
+.btn.primary:hover, button.btn-primary:hover {
+  background-color: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+  color: var(--color-on-primary);
+  box-shadow: 0 6px 18px rgba(10, 10, 10, 0.2);
+}
+
+.btn.on-color {
+  background-color: #ffffff;
+  color: var(--color-ink);
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.btn.on-color:hover {
+  background-color: #fdfbf7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.btn.danger {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+}
+
+.btn.danger:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+.btn.success {
+  background-color: #059669;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+.btn.success:hover {
+  background-color: #047857;
+  border-color: #047857;
+}
+
+.btn.warning-btn {
+  background-color: #d97706;
+  border-color: #d97706;
+  color: #ffffff;
+}
+
+.btn.warning-btn:hover {
+  background-color: #b45309;
+}
+
+.btn.sm {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+  border-radius: var(--rounded-sm);
+}
+
+.btn.lg {
+  height: 52px;
+  padding: 0 28px;
+  font-size: 16px;
+  border-radius: var(--rounded-md);
+}
+
+.btn:disabled, .btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. Layout Shell & Main Wrap
+   -------------------------------------------------------------------------- */
+.wrap, .main-wrap {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-section);
+  flex: 1;
+}
+
+.page-header {
+  margin-bottom: var(--spacing-xl);
+}
+
+/* --------------------------------------------------------------------------
+   7. Clean Editorial Feature Columns (No Card Boxes)
+   -------------------------------------------------------------------------- */
+.feature-card-grid, .features-editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 36px 32px;
+  margin: 32px 0 56px 0;
+  padding: 0;
+}
+
+.feature-card, .feature-editorial-item {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 24px 0 0 0;
+  border-top: 2px solid var(--color-surface-strong) !important;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  transition: border-color var(--transition-fast);
+}
+
+.feature-card:hover, .feature-editorial-item:hover {
+  border-top-color: var(--color-primary) !important;
+  transform: none !important;
+}
+
+.feature-editorial-num {
+  font-family: var(--font-family-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.feature-card h3, .feature-editorial-item h3 {
+  font-family: var(--font-family-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--color-ink) !important;
+  margin: 0 0 8px 0;
+}
+
+.feature-card p, .feature-editorial-item p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-muted) !important;
+  margin: 0 0 16px 0;
+}
+
+/* Embedded Product UI Fragment - Clean Minimal Style */
+.ui-fragment {
+  background: var(--color-surface-card);
+  border-radius: var(--rounded-sm);
+  padding: 12px 14px;
+  margin-top: 12px;
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+}
+
+/* --------------------------------------------------------------------------
+   8. Clean Open Hero Section (No Bounded Card Box)
+   -------------------------------------------------------------------------- */
+.hero-impact-section {
+  position: relative;
+  min-height: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 20px 72px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-surface-strong);
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.hero-bg-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+.hero-bg-backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-impact-content {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-title-giant {
+  font-family: var(--font-family-display);
+  font-size: clamp(40px, 6.8vw, 76px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -2.5px;
+  color: var(--color-ink);
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+}
+
+.gradient-accent-text {
+  color: var(--color-brand-pink);
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+.hero-desc-large {
+  font-size: clamp(16px, 1.8vw, 18.5px);
+  line-height: 1.65;
+  color: var(--color-body);
+  max-width: 680px;
+  margin: 0 0 32px 0;
+}
+
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.btn-arrow-hover svg {
+  transition: transform var(--transition-fast);
+}
+
+.btn-arrow-hover:hover svg {
+  transform: translateX(4px);
+}
+
+/* --------------------------------------------------------------------------
+   8b. Clean Editorial Proven Reliability Section (No Bento Card Boxes)
+   -------------------------------------------------------------------------- */
+.reliability-section {
+  padding: 40px 0 56px;
+  border-bottom: 1px solid var(--color-surface-strong);
+  margin-bottom: 48px;
+}
+
+.reliability-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: center;
+}
+
+@media (max-width: 960px) {
+  .reliability-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+.bento-stats-grid, .stats-editorial-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 24px;
+}
+
+.stat-bento-box, .stat-editorial-box {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 16px 0 0 0 !important;
+  border-top: 1px solid var(--color-surface-strong) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: auto;
+}
+
+.stat-bento-box.offset-down {
+  margin-top: 0;
+}
+
+.hero-band {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--spacing-xl);
+  align-items: center;
+  padding: var(--spacing-lg) 0 var(--spacing-xxl) 0;
+  margin-bottom: var(--spacing-xl);
+}
+
+@media (max-width: 960px) {
+  .hero-band {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-md) 0 var(--spacing-xl) 0;
+  }
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-surface-strong);
+  padding: 6px 16px;
+  border-radius: var(--rounded-pill);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.hero-illustration-card {
+  background-color: var(--color-surface-soft);
+  border-radius: var(--rounded-xl);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-surface-card);
+  box-shadow: 0 12px 36px rgba(10, 10, 10, 0.04);
+}
+
+.clay-art-svg {
+  width: 100%;
+  max-width: 380px;
+  filter: drop-shadow(0 14px 24px rgba(10, 10, 10, 0.08));
+}
+
+/* --------------------------------------------------------------------------
+   9. Clean Open Sections, Tables & Content Containers (No Card Boxes)
+   -------------------------------------------------------------------------- */
+.card, .content-card {
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--color-surface-strong);
+  border-radius: 0;
+  padding: 32px 0;
+  margin-bottom: 32px;
+  box-shadow: none;
+}
+
+.card.elevated {
+  background: transparent;
+  box-shadow: none;
+  border-top: 1px solid var(--color-surface-strong);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+/* Typographic Metric Strip (No Card Boxes) */
+.stat-cards-grid, .stats-strip-clean {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  padding: 24px 0 36px 0;
+  border-bottom: 1px solid var(--color-surface-strong);
+  margin-bottom: 40px;
+}
+
+.stat-card-clay, .stat-item-clean {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: none;
+  border-left: 2px solid var(--color-surface-strong);
+  padding-left: 16px;
+}
+
+.stat-number-huge {
+  font-family: var(--font-family-display);
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -1.2px;
+  color: var(--color-ink);
+  margin-bottom: 4px;
+}
+
+.stat-label-clay {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+}
+
+/* Open Minimalist Table (No Card Enclosure) */
+.table-card {
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--color-surface-strong);
+  border-radius: 0;
+  overflow: visible;
+  margin-bottom: 48px;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.report-table, .table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.report-table th, .table th {
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
+  font-weight: 600;
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.report-table td, .table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-hairline-soft);
+  color: var(--color-body);
+}
+
+.report-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.report-table tbody tr:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.report-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Key-Value Tables */
+.kv {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.kv td, .kv th {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
+  font-size: 14px;
+}
+
+.kv tr:last-child td, .kv tr:last-child th {
+  border-bottom: none;
+}
+
+.kv td:first-child, .kv th {
+  color: var(--color-muted);
+  width: 35%;
+  font-weight: 500;
+}
+
+.kv td:last-child {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   10. Badges, Chips, Pills & Indicators
+   -------------------------------------------------------------------------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--rounded-pill);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.badge-pill {
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: var(--rounded-pill);
+}
+
+/* Evidence Level Badges (5-Tier Clay Palette) */
+.badge-level-1 {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-level-2 {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-level-3 {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.badge-level-4 {
+  background-color: #ffedd5;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
+.badge-level-5 {
+  background-color: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+}
+
+/* Doctor Review Status Badges */
+.status-approved {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.status-modified {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-draft {
+  background-color: var(--color-surface-card);
+  color: var(--color-muted);
+}
+
+.tag-chip {
+  display: inline-block;
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: var(--rounded-pill);
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+
+.feature-tag {
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  background: var(--color-surface-soft);
+  padding: 3px 8px;
+  border-radius: var(--rounded-xs);
+  color: var(--color-ink);
+}
+
+.badge.dir.up {
+  background-color: #ffe4e6;
+  color: #9f1239;
+}
+
+.badge.dir.down {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+/* --------------------------------------------------------------------------
+   11. Alerts, Flash Messages & Notifications
+   -------------------------------------------------------------------------- */
+.flash, .alert {
+  padding: 14px 20px;
+  border-radius: var(--rounded-md);
+  margin-bottom: var(--spacing-lg);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+
+.flash.success, .alert.success {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.flash.warning, .alert.warning {
+  background-color: #fffbeb;
+  border-color: #fef3c7;
+  color: #92400e;
+}
+
+.flash.error, .alert.danger, .banner.error {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.banner.ok {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-surface-strong);
+  color: var(--color-ink);
+  padding: 12px 18px;
+  border-radius: var(--rounded-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Active Model Notification Card */
+.active-model-card {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-surface-strong);
+  border-radius: var(--rounded-lg);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+.active-model-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--color-ink);
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   12. Forms & Inputs (Clay Text Input Tokens)
+   -------------------------------------------------------------------------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="file"],
+select,
+textarea {
+  height: 44px;
+  padding: 0 16px;
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  font-family: var(--font-family-body);
+  font-size: 14px;
+  color: var(--color-ink);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+
+textarea {
+  height: auto;
+  padding: 12px 16px;
+  line-height: 1.5;
+}
+
+input[type="file"] {
+  padding: 8px 12px;
+  line-height: 1.8;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.06);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 640px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dropzone styling */
+.dropzone-area {
+  border: 2px dashed var(--color-hairline);
+  border-radius: var(--rounded-lg);
+  padding: 32px 20px;
+  text-align: center;
+  background-color: var(--color-surface-soft);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.dropzone-area:hover, .dropzone-area.dragover {
+  border-color: var(--color-ink);
+  background-color: var(--color-surface-card);
+}
+
+/* --------------------------------------------------------------------------
+   13. Report Template Specific Styling (Clean Medical Dossier - No Cards)
+   -------------------------------------------------------------------------- */
+.report-hero-bar {
+  background: transparent;
+  border-radius: 0;
+  padding: 0 0 24px 0;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  border: none;
+  border-bottom: 1px solid var(--color-surface-strong);
+}
+
+.report-metrics-trio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 32px;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-surface-strong);
+}
+
+.report-metric-card {
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 0 0 16px !important;
+  border: none !important;
+  border-left: 2px solid var(--color-surface-strong) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.metric-big-val {
+  font-family: var(--font-family-display);
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -1.2px;
+  margin: 6px 0;
+  color: var(--color-ink);
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Expandable Decision History Drawer */
+.history-drawer {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--rounded-md);
+  padding: 16px;
+  margin-top: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   14. Clean Open Pre-Footer Section (No Card Box)
+   -------------------------------------------------------------------------- */
+.cta-band-illustrated {
+  background: transparent;
+  border-radius: 0;
+  padding: 64px 0 32px;
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 48px;
+  align-items: center;
+  border: none;
+  border-top: 1px solid var(--color-surface-strong);
+}
+
+@media (max-width: 860px) {
+  .cta-band-illustrated {
+    grid-template-columns: 1fr;
+    padding: 40px 24px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. Footer (Warm Cream Canvas Pacing — NOT Dark)
+   -------------------------------------------------------------------------- */
+.footer-clay {
+  background-color: var(--color-surface-soft);
+  border-top: 1px solid var(--color-surface-card);
+  padding: 64px var(--spacing-lg) 40px;
+  color: var(--color-body);
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: var(--spacing-xl);
+}
+
+@media (max-width: 900px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.footer-col h4 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-ink);
+  margin: 0 0 16px 0;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-col a {
+  color: var(--color-muted);
+  font-size: 13.5px;
+  transition: color var(--transition-fast);
+}
+
+.footer-col a:hover {
+  color: var(--color-ink);
+}
+
+.footer-bottom {
+  max-width: 1280px;
+  margin: 48px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-surface-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--color-muted);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Clay Horizon Mountain Signature in Footer */
+.footer-horizon {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto 32px auto;
+  opacity: 0.85;
+}
+
+/* Clay Live Marquee Band */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.marquee-container {
+  background-color: var(--color-surface-card);
+  border-top: 1px solid var(--color-surface-strong);
+  border-bottom: 1px solid var(--color-surface-strong);
+  padding: 16px 0;
+  overflow: hidden;
+  position: relative;
+  margin: var(--spacing-xl) 0;
+  border-radius: var(--rounded-lg);
+}
+
+.marquee-track {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 28px;
+}
+
+.marquee-val {
+  font-family: var(--font-family-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  color: var(--color-ink);
+}
+
+.marquee-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-muted);
+}
+
+.marquee-divider {
+  width: 1px;
+  height: 28px;
+  background-color: var(--color-surface-strong);
+}
+
+/* --------------------------------------------------------------------------
+   16. Animated Preloader & Kinetic Text Effects (GSAP Theme)
+   -------------------------------------------------------------------------- */
+.app-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: var(--color-canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+}
+
+.preloader-brand-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-surface-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(10, 10, 10, 0.04);
+}
+
+.preloader-brand-icon img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.preloader-title {
+  font-family: var(--font-family-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+  margin-bottom: 16px;
+}
+
+.preloader-wave-wrap {
+  width: 100%;
+  max-width: 260px;
+  height: 48px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.preloader-wave-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.preloader-wave-pulse {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+}
+
+.preloader-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-muted);
+  margin-bottom: 8px;
+}
+
+.preloader-counter {
+  font-family: var(--font-family-mono);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.preloader-progress-track {
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background-color: var(--color-surface-strong);
+  overflow: hidden;
+  position: relative;
+}
+
+.preloader-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-brand-teal), var(--color-brand-pink));
+  border-radius: 9999px;
+}
+
+/* Kinetic Text & Micro Animation Utilities */
+.line-reveal-wrapper {
+  overflow: hidden;
+  display: block;
+}
+
+.line-reveal-inner {
+  display: inline-block;
+  transform: translateY(110%);
+}
+
+.hover-lift {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   17. Print Stylesheet (Clean PDF Generation & Hardcopy Export)
+   -------------------------------------------------------------------------- */
+@page {
+  size: letter portrait;
+  margin: 14mm 12mm 14mm 12mm;
+}
+
+@media print {
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .top-nav, 
+  .cta-band-illustrated, 
+  .footer-clay, 
+  .btn, 
+  .row-actions, 
+  .no-print,
+  .marquee-outer-wrapper,
+  .hero-bg-backdrop {
+    display: none !important;
+  }
+
+  .wrap, .main-wrap, .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .report-hero-bar {
+    border-bottom: 2pt solid #0f172a !important;
+    padding-bottom: 12pt !important;
+    margin-bottom: 16pt !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+  }
+
+  .report-metrics-trio {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 12pt !important;
+    border: 1pt solid #cbd5e1 !important;
+    padding: 10pt !important;
+    background: #f8fafc !important;
+    margin-bottom: 18pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  .report-metric-card {
+    border-left: none !important;
+    padding: 0 !important;
+  }
+
+  .metric-big-val {
+    font-size: 22pt !important;
+    line-height: 1.1 !important;
+    color: #0f172a !important;
+  }
+
+  .report-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto !important;
+    margin-bottom: 16pt !important;
+  }
+
+  .report-table tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  .report-table th {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 0.5pt solid #cbd5e1 !important;
+    font-weight: 700 !important;
+    padding: 5pt 8pt !important;
+    font-size: 9pt !important;
+  }
+
+  .report-table td {
+    border: 0.5pt solid #e2e8f0 !important;
+    padding: 5pt 8pt !important;
+    font-size: 8.5pt !important;
+  }
+
+  .table-wrapper {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
+  .grid2, .cards-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  .badge {
+    border: 0.5pt solid #64748b !important;
+    color: #0f172a !important;
+    background: transparent !important;
+    padding: 2pt 6pt !important;
+    font-size: 8pt !important;
+  }
+
+  .alert {
+    border: 1pt solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    page-break-inside: avoid !important;
+  }
+
+  a[href]::after {
+    content: "" !important;
+  }
+}

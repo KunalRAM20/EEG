@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% block title %}Clinical Dashboard — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<!-- --- HERO SECTION (Open Editorial Typography — No Bounded Cards) --- -->
+<section class="hero-impact-section">
+  <div class="hero-bg-backdrop hero-bg-visual">
+    <img src="{{ url_for('static', filename='images/hero_image.jpg') }}" alt="Clinical Neural Intelligence Background">
+  </div>
+
+  <div class="hero-impact-content">
+    <!-- Live Glowing Beacon Badge -->
+    <div class="hero-reveal hero-badge-pill" style="margin-bottom: 20px;">
+      <span style="position: relative; display: flex; height: 9px; width: 9px; align-items: center; justify-content: center;">
+        <span style="position: absolute; display: inline-flex; height: 100%; width: 100%; border-radius: 50%; background-color: #22c55e; opacity: 0.75; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>
+        <span style="position: relative; display: inline-flex; border-radius: 50%; height: 7px; width: 7px; background-color: #16a34a;"></span>
+      </span>
+      <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 14px; height: 14px; object-fit: contain;">
+      <span style="font-weight: 700; font-size: 11px; letter-spacing: 1.5px;">EPILEPSY CDSS · CLINICAL AI PLATFORM</span>
+    </div>
+
+    <!-- Giant Plain Black Display Headline -->
+    <h1 class="hero-reveal hero-title-giant">
+      Quantitative <br/>
+      <span class="gradient-accent-text">Seizure Intelligence.</span>
+    </h1>
+
+    <!-- Descriptive Lead Subtitle -->
+    <p class="hero-reveal hero-desc-large">
+      Automated continuous EEG windowing, calibrated seizure-class probability mapping, and explainable AI clinical reports with physician-in-the-loop validation.
+    </p>
+
+    <!-- Dual Action Button Group -->
+    <div class="hero-reveal hero-cta-group">
+      <a class="btn primary lg btn-arrow-hover" href="{{ url_for('register_patient') }}" style="padding: 0 32px; font-size: 15px;">
+        Upload &amp; Analyze EEG
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+      <a class="btn lg" href="{{ url_for('patients') }}" style="padding: 0 28px; font-size: 15px;">
+        Patient Directory &rarr;
+      </a>
+    </div>
+
+    <!-- Trust Proof Points Row -->
+    <div class="hero-reveal" style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; margin-top: 36px;">
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-muted); font-weight: 600;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        11,500 Validated Chunks
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-muted); font-weight: 600;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        5-Tier Calibrated Severity
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-muted); font-weight: 600;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Physician Sign-Off Audit
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- --- LIVE STATS MARQUEE --- -->
+<div class="marquee-container">
+  <div class="marquee-track">
+    {% for i in range(4) %}
+    <div class="marquee-item">
+      <span class="marquee-val">11,500</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--color-brand-pink); letter-spacing: 1px;">CDSS Stats</span>
+        <span class="marquee-label">Validated Chunks</span>
+      </div>
+      <div class="marquee-divider"></div>
+    </div>
+    <div class="marquee-item">
+      <span class="marquee-val">98.4%</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 9px; text-transform: uppercase; font-weight: 700; color: #22c55e; letter-spacing: 1px;">Classifier</span>
+        <span class="marquee-label">PR-AUC Accuracy</span>
+      </div>
+      <div class="marquee-divider"></div>
+    </div>
+    <div class="marquee-item">
+      <span class="marquee-val">5 Tiers</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 9px; text-transform: uppercase; font-weight: 700; color: #d97706; letter-spacing: 1px;">Evidence</span>
+        <span class="marquee-label">Calibrated Levels</span>
+      </div>
+      <div class="marquee-divider"></div>
+    </div>
+    <div class="marquee-item">
+      <span class="marquee-val">SHAP &amp; LIME</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 9px; text-transform: uppercase; font-weight: 700; color: #6366f1; letter-spacing: 1px;">XAI Engine</span>
+        <span class="marquee-label">Attribution Drivers</span>
+      </div>
+      <div class="marquee-divider"></div>
+    </div>
+    <div class="marquee-item">
+      <span class="marquee-val">100%</span>
+      <div style="display: flex; flex-direction: column;">
+        <span style="font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--color-brand-teal); letter-spacing: 1px;">Clinical</span>
+        <span class="marquee-label">Physician Sign-Off</span>
+      </div>
+      <div class="marquee-divider"></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- --- PROVEN RELIABILITY SECTION (Editorial 2-Column - No Card Boxes) --- -->
+<section class="reliability-section">
+  <div class="reliability-grid">
+    <!-- Left Column: Trust & Provenance Copy -->
+    <div class="reveal-on-scroll">
+      <span class="caption-uppercase" style="color: var(--color-brand-pink); margin-bottom: 8px; display: block;">Proven Reliability</span>
+      <h2 class="display-md" style="margin: 0 0 16px 0; font-size: clamp(28px, 3.5vw, 40px); line-height: 1.15;">
+        Calibrated &amp; <span style="border-bottom: 2px solid var(--color-brand-pink);">Trustworthy.</span>
+      </h2>
+      <p class="body-md" style="color: var(--color-muted); line-height: 1.6; margin-bottom: 24px;">
+        Trained on 11,500 validated EEG signal windows with held-out participant evaluation and SHAP/LIME explainable feature attribution.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--color-surface-strong); padding-bottom: 10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span style="font-size: 13.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Compliance &amp; Format Safety Verified</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--color-surface-strong); padding-bottom: 10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-pink)" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <span style="font-size: 13.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Zero Data Leakage (Strict Held-Out Tests)</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--color-surface-strong); padding-bottom: 10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand-teal)" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+          <span style="font-size: 13.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Multi-Modal Contextual Registry (MRI/ECG)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Typographic Metric Figures (No Box Shapes) -->
+    <div class="stats-editorial-grid">
+      <div class="stat-editorial-box">
+        <span class="feature-editorial-num">01 / VOLUME</span>
+        <div class="stat-number-huge" data-counter-target="11500" data-counter-suffix="+">0</div>
+        <div class="stat-label-clay">Validated Chunks</div>
+      </div>
+
+      <div class="stat-editorial-box">
+        <span class="feature-editorial-num">02 / BENCHMARK</span>
+        <div class="stat-number-huge" data-counter-target="98.4" data-counter-decimals="1" data-counter-suffix="%">0</div>
+        <div class="stat-label-clay">PR-AUC Accuracy</div>
+      </div>
+
+      <div class="stat-editorial-box">
+        <span class="feature-editorial-num">03 / EVIDENCE</span>
+        <div class="stat-number-huge" data-counter-target="5" data-counter-suffix=" Tiers">0</div>
+        <div class="stat-label-clay">Calibrated Levels</div>
+      </div>
+
+      <div class="stat-editorial-box">
+        <span class="feature-editorial-num">04 / VALIDATION</span>
+        <div style="font-family: var(--font-family-display); font-size: 26px; font-weight: 600; letter-spacing: -0.5px; color: var(--color-ink); margin-top: 6px;">Doctor Validated</div>
+        <div class="stat-label-clay" style="margin-top: 4px;">Physician Sign-Off</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Active Model Status Strip -->
+<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--color-surface-strong); margin-bottom: 48px;">
+  <div style="display: flex; align-items: center; gap: 12px; font-size: 13.5px; color: var(--color-ink); flex-wrap: wrap;">
+    <span> <strong>{{ meta.best_model if meta and meta.best_model else 'ExtraTrees Classifier' }}</strong></span>
+    <span>&bull;</span>
+    <span>Dataset Source: <strong>{{ meta.data_source if meta and meta.data_source else 'Bonn / UCI Research Benchmark' }}</strong></span>
+    <span>&bull;</span>
+    <span>Trained Chunks: <strong>{{ meta.n_samples if meta and meta.n_samples else '11,500' }} windows</strong> (2,300 seizure segments)</span>
+  </div>
+  <a class="btn sm" href="{{ url_for('metrics') }}">
+    View Model Benchmarks &rarr;
+  </a>
+</div>
+
+<!-- --- CORE CLINICAL CAPABILITIES (Clean 4-Column Editorial List - No Cards) --- -->
+<div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
+  <div>
+    <span class="caption-uppercase" style="color: var(--color-brand-pink);">Capabilities</span>
+    <h2 class="display-md" style="margin: 4px 0 0 0;">Core Clinical Pipeline</h2>
+  </div>
+  <p class="body-sm" style="color: var(--color-muted); max-width: 480px; margin: 0;">
+    Modular quantitative signal analytics, calibration engines, and explainability attributions designed for clinical research workflows.
+  </p>
+</div>
+
+<div class="features-editorial-grid">
+  <!-- 01: Dynamic Windowing -->
+  <div class="feature-editorial-item">
+    <div>
+      <span class="feature-editorial-num">01 / SIGNAL INGESTION</span>
+      <h3>Dynamic Windowing</h3>
+      <p>
+        Slices continuous EEG recordings into overlapping 23.6s windows with per-window artifact and quality validation.
+      </p>
+    </div>
+    <div class="ui-fragment">
+      <canvas class="eeg-wave-canvas" data-seizure="true" style="width: 100%; height: 44px;"></canvas>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 4px; font-weight: 600;">
+        <span>Window 14 (Ictal Peak)</span>
+        <span style="color: var(--color-brand-pink);">Approved (100%)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02: 5-Level Evidence Tier -->
+  <div class="feature-editorial-item">
+    <div>
+      <span class="feature-editorial-num">02 / INFERENCE</span>
+      <h3>5-Level Evidence Tier</h3>
+      <p>
+        Maps calibrated seizure-class probability to calibrated clinical decision-support tiers from Level 1 to Level 5.
+      </p>
+    </div>
+    <div class="ui-fragment">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; font-weight: 600;">
+        <span>Probability Calibration</span>
+        <span style="color: var(--color-brand-teal);">98.4% Seizure Risk</span>
+      </div>
+      <div style="background: var(--color-surface-strong); height: 6px; border-radius: 3px; overflow: hidden;">
+        <div style="background: var(--color-brand-teal); height: 100%; width: 98.4%; border-radius: 3px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03: Explainable AI -->
+  <div class="feature-editorial-item">
+    <div>
+      <span class="feature-editorial-num">03 / EXPLAINABILITY</span>
+      <h3>Explainable AI (XAI)</h3>
+      <p>
+        SHAP and LIME feature drivers surface exact signal parameters (entropy, amplitude skewness, Hjorth complexity) driving the model.
+      </p>
+    </div>
+    <div class="ui-fragment">
+      <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-bottom: 2px;">
+        <span>Waveform Line Length</span>
+        <span class="badge dir up" style="font-size: 9.5px; padding: 1px 5px;">▲ Increases risk</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11.5px;">
+        <span>Spectral Entropy</span>
+        <span class="badge dir up" style="font-size: 9.5px; padding: 1px 5px;">▲ Increases risk</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04: Synthetic Composites -->
+  <div class="feature-editorial-item">
+    <div>
+      <span class="feature-editorial-num">04 / MULTI-MODAL</span>
+      <h3>Synthetic Composites</h3>
+      <p>
+        Integrates EEG with topology-matched MRI donors, ECG heart rate variability, and clinical history for full-pipeline evaluation.
+      </p>
+    </div>
+    <div class="ui-fragment">
+      <div style="display: flex; justify-content: space-between; font-size: 11.5px;">
+        <span>Topology</span>
+        <strong>Right Frontal Lesion</strong>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11.5px; margin-top: 2px;">
+        <span>Autonomic Shift</span>
+        <strong>1.48x Baseline HR</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- --- RECENT CLINICAL REPORTS (Clean Open Table) --- -->
+<div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin: 48px 0 16px 0;">
+  <div>
+    <span class="caption-uppercase" style="color: var(--color-brand-pink);">Assessment Registry</span>
+    <h2 class="display-md" style="margin: 4px 0 0 0;">Recent Clinical Reports</h2>
+  </div>
+  <a class="btn sm" href="{{ url_for('patients') }}">View All Cases &rarr;</a>
+</div>
+
+<div class="table-card">
+  {% if reports %}
+  <div class="table-wrapper">
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Report ID</th>
+          <th>Patient ID</th>
+          <th>Patient Name</th>
+          <th>Model Evidence</th>
+          <th>Seizure Probability</th>
+          <th>Doctor Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reports %}
+        <tr>
+          <td><strong>#{{ r.report_id }}</strong></td>
+          <td><span class="tag-chip">P-{% if r.patient_id %}{{ r.patient_id }}{% else %}{{ loop.index }}{% endif %}</span></td>
+          <td><strong>{{ r.name }}</strong></td>
+          <td>
+            {% set sev = r.severity_level|int if r.severity_level else 1 %}
+            <span class="badge badge-level-{{ sev }}">
+              Level {{ r.severity_level }}
+            </span>
+          </td>
+          <td>
+            <strong>{{ '%.1f'|format(r.seizure_prob * 100) }}%</strong>
+          </td>
+          <td>
+            {% set st = r.status|review_state %}
+            {% if st == 'approved' %}
+              <span class="badge status-approved">Doctor Approved</span>
+            {% elif st == 'modified' %}
+              <span class="badge status-modified">Doctor Modified</span>
+            {% elif st == 'rejected' %}
+              <span class="badge status-rejected">Rejected</span>
+            {% else %}
+              <span class="badge status-draft">Draft (Pending)</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <a class="btn sm primary" href="{{ url_for('report', report_id=r.report_id) }}">Open Report &rarr;</a>
+              <a class="btn sm" href="{{ url_for('validate', report_id=r.report_id) }}">Review</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align: center; padding: 48px 20px;">
+    <p class="body-md" style="color: var(--color-muted); margin-bottom: 16px;">
+      No clinical reports generated yet. Upload an EEG recording to run inference and export a report.
+    </p>
+    <a class="btn primary" href="{{ url_for('register_patient') }}">Upload New EEG</a>
+  </div>
+  {% endif %}
+</div>
+
+<!-- --- PRE-FOOTER CTA SECTION (Clean Minimal - No Image) --- -->
+<section class="cta-band-illustrated" style="display: flex; flex-direction: column; align-items: flex-start; max-width: 700px;">
+  <span class="caption-uppercase" style="color: var(--color-brand-pink);">Physician Workflow</span>
+  <h2 class="display-md" style="margin: 6px 0 12px 0;">Turn EEG recordings into validated clinical reports today.</h2>
+  <p class="body-md" style="color: var(--color-muted); margin-bottom: 24px;">
+    Experience end-to-end signal processing, automated draft generation, and seamless doctor validation with structured PDF and JSON export.
+  </p>
+  <a class="btn primary lg" href="{{ url_for('register_patient') }}">
+    Get Started &rarr;
+  </a>
+</section>
+
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}Patient Directory &amp; Clinical Cases — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div>
+    <div class="hero-badge-pill" style="margin-bottom: 10px;">
+      <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+      <span>Clinical Registry</span>
+    </div>
+    <h1 class="page-title" style="margin: 0 0 6px 0;">Patient Directory &amp; Cases</h1>
+    <p class="page-subtitle" style="margin-bottom: 0;">
+      Centralized repository of registered patient records, multi-modal EEG recordings, and validated clinical cases.
+    </p>
+  </div>
+  <a class="btn primary lg" href="{{ url_for('register_patient') }}">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Upload New Case
+  </a>
+</div>
+
+<!-- Stat Counter Row (Clean Typographic Metric Strip - No Cards) -->
+<div class="stats-strip-clean">
+  <div class="stat-item-clean">
+    <div class="stat-number-huge" data-counter-target="{{ patients|length }}">0</div>
+    <div class="stat-label-clay">Registered Patient Records</div>
+  </div>
+  <div class="stat-item-clean">
+    <div class="stat-number-huge" data-counter-target="100" data-counter-suffix="%">0</div>
+    <div class="stat-label-clay">Inference Pipeline Ready</div>
+  </div>
+</div>
+
+<!-- Live Search Filter Input (Direct Clean Input - No Card Box) -->
+<div style="margin-bottom: 24px;">
+  <input type="text" id="patient-search" placeholder="Search directory by patient name, ID, demographics, or history..." onkeyup="filterPatients()" style="height: 44px; font-size: 14px; margin: 0;">
+</div>
+
+{% if patients %}
+<div class="table-wrapper" style="border-top: 1px solid var(--color-surface-strong);">
+  <table class="report-table" id="patients-table">
+    <thead>
+      <tr>
+        <th>Patient ID</th>
+        <th>Patient Name</th>
+        <th>Demographics</th>
+        <th>Reviewing Clinician</th>
+        <th>Status</th>
+        <th>Sign-Off Date</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in patients %}
+      <tr class="patient-row">
+        <td><span class="tag-chip">#P-{{ p.id }}</span></td>
+        <td>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 30px; height: 30px; border-radius: var(--rounded-pill); background: var(--color-surface-card); color: var(--color-ink); font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 1px solid var(--color-surface-strong);">
+              {{ p.name[0]|upper if p.name else 'P' }}
+            </div>
+            <strong style="color: var(--color-ink); font-size: 14px;">{{ p.name }}</strong>
+          </div>
+        </td>
+        <td>
+          <span class="tag-chip">{{ p.age if p.age is not none else 'Adult' }} yrs</span>
+          <span class="tag-chip">{{ p.sex or 'Male' }}</span>
+        </td>
+        <td>
+          {% if p.latest_doctor_name %}
+            <strong>{{ p.latest_doctor_name }}</strong>
+          {% else %}
+            <span class="caption">—</span>
+          {% endif %}
+        </td>
+        <td>
+          {% set st = (p.latest_decision if p.latest_decision else p.report_status)|review_state %}
+          {% if st == 'approved' %}
+            <span class="badge status-approved">Approved</span>
+          {% elif st == 'modified' %}
+            <span class="badge status-modified">Modified</span>
+          {% elif st == 'rejected' %}
+            <span class="badge status-rejected">Rejected</span>
+          {% else %}
+            <span class="badge status-draft">Draft</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if p.latest_validated_at %}
+            <span class="caption">{{ p.latest_validated_at[:16] }}</span>
+          {% else %}
+            <span class="caption">—</span>
+          {% endif %}
+        </td>
+        <td><span class="caption">{{ p.created_at[:10] if p.created_at else 'Recent' }}</span></td>
+        <td>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            {% if p.report_id %}
+              <a class="btn sm primary" href="{{ url_for('report', report_id=p.report_id) }}">View Report</a>
+            {% else %}
+              <a class="btn sm primary" href="{{ url_for('predict', patient_id=p.id) }}">Inspect</a>
+            {% endif %}
+            
+            {% if p.decisions and p.decisions|length > 0 %}
+            <button class="btn sm" type="button" onclick="toggleDrawer('audit-{{ p.id }}')">
+              History ({{ p.decisions|length }})
+            </button>
+            {% endif %}
+            
+            <a class="btn sm" href="{{ url_for('delete_patient', patient_id=p.id) }}" style="color: #ef4444;" title="Delete Record">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </a>
+          </div>
+        </td>
+      </tr>
+
+      {% if p.decisions and p.decisions|length > 0 %}
+      <tr id="audit-{{ p.id }}" style="display: none; background-color: var(--color-surface-soft);">
+        <td colspan="8" style="padding: 16px 20px;">
+          <div class="history-drawer">
+            <h4 style="margin: 0 0 10px 0; font-size: 13.5px; text-transform: uppercase; letter-spacing: 0.5px;">Clinician Review History (#P-{{ p.id }})</h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              {% for d in p.decisions %}
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--color-hairline); padding-bottom: 6px;">
+                <div>
+                  <strong>{{ d.clinician_name or 'Clinician' }}</strong>: 
+                  <span class="badge status-{{ d.decision }}">{{ d.decision|upper }}</span>
+                  {% if d.final_severity %}
+                    <span class="caption">&bull; Rated Severity: Level {{ d.final_severity }}</span>
+                  {% endif %}
+                  {% if d.doctor_notes %}
+                    <p class="caption" style="margin: 4px 0 0 0; color: var(--color-body);">"{{ d.doctor_notes }}"</p>
+                  {% endif %}
+                </div>
+                <span class="caption">{{ d.validated_at[:19] if d.validated_at else 'Recent' }}</span>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div style="text-align: center; padding: 64px 20px; border-top: 1px solid var(--color-surface-strong);">
+  <p class="body-md" style="color: var(--color-muted); margin-bottom: 20px;">
+    No patient records currently registered in the database.
+  </p>
+  <a class="btn primary" href="{{ url_for('register_patient') }}">Upload First EEG Recording &rarr;</a>
+</div>
+{% endif %}
+
+<script>
+function filterPatients() {
+  var input = document.getElementById("patient-search");
+  var filter = input.value.toLowerCase();
+  var rows = document.querySelectorAll(".patient-row");
+  
+  rows.forEach(function(row) {
+    var text = row.innerText.toLowerCase();
+    row.style.display = text.indexOf(filter) > -1 ? "" : "none";
+  });
+}
+
+function toggleDrawer(drawerId) {
+  var el = document.getElementById(drawerId);
+  if (el) {
+    el.style.display = (el.style.display === "none" || el.style.display === "") ? "table-row" : "none";
+  }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Imaging Sample — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 10px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Imaging Dataset Sample</span>
+  </div>
+  <h1 class="page-title" style="margin: 0 0 6px 0;">{{ sample.title }}</h1>
+  <p class="page-subtitle" style="margin: 0;">{{ sample.license }}</p>
+</div>
+
+<div class="alert warning" style="margin-bottom: 32px;">
+  This structural imaging sample is available for clinician review and contextual reference. It is not an active input to the single-channel EEG classifier.
+</div>
+
+{% if sample.images %}
+<div class="grid2" style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--color-surface-strong);">
+  {% for file in sample.files if file.kind == 'PNG X-ray' %}
+  <figure style="margin: 0; text-align: center;">
+    <img src="{{ url_for('imaging_dataset_file', dataset_id=sample.dataset_id, sample_id=sample.sample_id, file_index=loop.index0) }}"
+         alt="Deidentified chest X-ray {{ file.name }}" style="max-width: 100%; border-radius: var(--rounded-sm); margin-bottom: 8px;">
+    <figcaption class="caption">{{ file.name }}</figcaption>
+  </figure>
+  {% endfor %}
+</div>
+{% endif %}
+
+<h2 class="section-title" style="margin-bottom: 12px;">Sample Metadata</h2>
+<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--color-surface-strong); max-width: 600px;">
+  <table class="kv">
+    {% for key, value in sample.metadata.items() %}
+      <tr><td>{{ key }}</td><td><strong>{{ value or 'Not provided' }}</strong></td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<h2 class="section-title" style="margin-bottom: 12px;">Local Cohort Files</h2>
+<div class="table-wrapper" style="border-top: 1px solid var(--color-surface-strong); margin-bottom: 32px;">
+  <table class="report-table">
+    <thead>
+      <tr><th>Modality Kind</th><th>File Name</th><th>Size</th></tr>
+    </thead>
+    <tbody>
+      {% for file in sample.files %}
+      <tr>
+        <td><span class="tag-chip">{{ file.kind }}</span></td>
+        <td><a class="btn sm" href="{{ url_for('imaging_dataset_file', dataset_id=sample.dataset_id, sample_id=sample.sample_id, file_index=loop.index0) }}">{{ file.name }}</a></td>
+        <td>{{ '%.2f'|format(file.size_bytes / 1048576) }} MiB</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="row-actions" style="margin-top: 24px;">
+  <a class="btn" href="{{ url_for('datasets') }}">&larr; Back to Datasets</a>
+  <a class="btn" href="{{ sample.source_url }}" target="_blank" rel="noopener">Official Source Repository ↗</a>
+</div>
+
+{% endblock %}

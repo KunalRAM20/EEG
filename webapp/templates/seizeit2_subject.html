@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ subject.id }} — SeizeIT2 Cohort Subject{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 10px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Cohort Subject Profile</span>
+  </div>
+  <h1 class="page-title" style="margin: 0 0 6px 0;">SeizeIT2 Subject {{ subject.id }}</h1>
+  <p class="page-subtitle" style="margin: 0;">
+    Sex: {{ subject.sex }} &bull; <strong>{{ subject.seizures }} annotated seizures</strong> &bull; Total Data Size: {{ subject.size_gb }} GB
+  </p>
+</div>
+
+<div class="table-wrapper" style="border-top: 1px solid var(--color-surface-strong); margin-bottom: 32px;">
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th>Recording Run</th>
+        <th>Available Modalities</th>
+        <th>Duration</th>
+        <th>Channels / Sampling Rate</th>
+        <th>Annotated Seizure Events</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in runs %}
+      <tr>
+        <td><strong>{{ r.run }}</strong></td>
+        <td>{{ r.modalities.keys()|list|join(', ') }}</td>
+        {% set h = r.modalities.get('eeg', {}).get('header', {}) %}
+        <td>
+          {% if h.data_records is not none and h.record_duration_seconds is not none %}
+            {{ '%.0f'|format(h.data_records * h.record_duration_seconds) }} s
+          {% else %}Unknown{% endif %}
+        </td>
+        <td>
+          {{ h.physical_signals or 'Unknown' }}
+          {% if h.sampling_rates_hz %} / {{ h.sampling_rates_hz|unique|join(', ') }} Hz{% endif %}
+        </td>
+        <td>
+          <span class="badge status-approved">{{ r.event_summary.seizure }} seizure events</span>
+          {% if r.event_summary.artifact %} <span class="badge-pill">{{ r.event_summary.artifact }} artifact</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="row-actions">
+  <a class="btn primary" href="{{ url_for('register_patient') }}">Register Subject for Analysis &rarr;</a>
+  <a class="btn" href="{{ url_for('datasets') }}">&larr; Back to Datasets</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Delete Patient Record #{{ summary.patient.id }} — Epilepsy CDSS{% endblock %}
+{% block content %}
+
+<div class="page-header" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--color-surface-strong);">
+  <div class="hero-badge-pill" style="margin-bottom: 10px;">
+    <img src="{{ url_for('static', filename='favicon.png') }}" alt="Logo" style="width: 16px; height: 16px; object-fit: contain;">
+    <span>Data Management</span>
+  </div>
+  <h1 class="page-title" style="margin: 0 0 6px 0;">Delete Patient Record #{{ summary.patient.id }}</h1>
+  <p class="page-subtitle" style="margin: 0;">Confirm deletion of patient record and associated application data.</p>
+</div>
+
+<div class="alert danger" style="margin-bottom: 32px;">
+  <strong>Warning:</strong> Permanently deletes <strong>{{ summary.patient.name }}</strong> and all linked prediction, report, and audit records. This operation cannot be undone.
+</div>
+
+<div style="margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--color-surface-strong); max-width: 540px;">
+  <h3 style="margin: 0 0 12px 0; font-size: 17px;">Records to be Deleted</h3>
+  <table class="kv" style="margin-bottom: 0;">
+    <tr><td>Patient Record</td><td><strong>1</strong></td></tr>
+    <tr><td>Predictions</td><td><strong>{{ summary.predictions }}</strong></td></tr>
+    <tr><td>Reports</td><td><strong>{{ summary.reports }}</strong></td></tr>
+    <tr><td>Doctor Validations</td><td><strong>{{ summary.validations }}</strong></td></tr>
+    <tr><td>Uploaded Attachments</td><td><strong>{{ summary.files }}</strong></td></tr>
+  </table>
+</div>
+
+<div style="max-width: 540px; margin-bottom: 48px;">
+  <h3 style="margin: 0 0 12px 0; font-size: 17px;">Confirm Deletion</h3>
+  <form method="post" class="form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+    <div class="form-group">
+      <label for="input-confirmation">Type patient ID <strong>{{ summary.patient.id }}</strong> to confirm deletion</label>
+      <input type="number" id="input-confirmation" name="confirmation" required autocomplete="off" min="1" placeholder="{{ summary.patient.id }}">
+    </div>
+    <div class="row-actions" style="margin-top: 10px;">
+      <button class="btn danger lg" type="submit">Permanently Delete Record</button>
+      <a class="btn lg" href="{{ url_for('predict', patient_id=summary.patient.id) }}">Cancel</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

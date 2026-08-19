@@ -1,0 +1,24 @@
+# Core scientific stack
+numpy>=1.26
+scipy>=1.11
+pandas>=2.1
+scikit-learn>=1.4
+joblib>=1.3
+xgboost>=2.0
+PyWavelets>=1.5
+mne>=1.10
+edfio>=0.4          # EDF/BDF writing; required by the EDF round-trip test
+
+# Deep learning (CPU wheels; supports Python 3.13)
+torch>=2.6
+
+# Explainable AI (optional at runtime — code falls back if these fail to install)
+shap>=0.45
+lime>=0.2.0.1
+
+# Web application
+Flask>=3.0
+
+# Utilities
+requests>=2.31
+reportlab>=4.0
